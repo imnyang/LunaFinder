@@ -1,0 +1,20 @@
+[server]
+host = "127.0.0.1"
+port = 8080
+
+[main_page]
+title = "LunaFinder File Browser"
+description = "Browse all available mount points and their contents"
+markdown_file = "./README.md"  # 메인 페이지에 표시할 마크다운 파일
+
+[mounts.home]
+path = "./files/home"
+description = "Home directory"
+
+[mounts.documents]
+path = "./files/documents"
+description = "Documents storage"
+
+[mounts.public]
+path = "./files/public"
+description = "Public files"

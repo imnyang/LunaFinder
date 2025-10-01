@@ -1,0 +1,2 @@
+This is a public file that anyone can access.
+No authentication required!

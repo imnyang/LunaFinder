@@ -1,0 +1,2 @@
+Hello World! This is a test file in the home directory.
+You can browse directories and download files using LunaFinder.
