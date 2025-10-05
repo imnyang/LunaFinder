@@ -9,6 +9,7 @@ Welcome to **LunaFinder** - A modern file browser with an elegant interface!
 - 📄 Markdown file preview
 - 🎨 Clean and intuitive UI
 - 🔒 Secure path traversal protection
+- ✏️ Upload, rename, edit, and delete files where write access is granted
 
 ## Quick Start
 
@@ -22,6 +23,7 @@ Edit `config.toml` to customize:
 - **Server settings** (host, port)
 - **Mount points** (path, description)
 - **Main page** (title, description, markdown file)
+- **Access control** using `public = true` for anonymous read-only mounts, `group.<name>` or `user.<name>` keys with composable permission aliases (for example `["viewer", "uploader"]`) defined under `[permissions.*]`
 
 Enjoy browsing your files! 🚀
 

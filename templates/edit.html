@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ filename }} 편집 - LunaFinder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .title {
+            font-size: 1.8em;
+            color: #667eea;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .title span {
+            font-size: 0.6em;
+            color: #666;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e7e7f7;
+            color: #444;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .editor textarea {
+            width: 100%;
+            min-height: 420px;
+            border-radius: 14px;
+            border: 1px solid #d9dcf2;
+            padding: 18px;
+            font-size: 1em;
+            font-family: 'Menlo', 'Fira Code', 'JetBrains Mono', monospace;
+            line-height: 1.5;
+            resize: vertical;
+            background: #f9f9ff;
+            color: #2e2e3b;
+        }
+
+        .editor textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .footer {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% set encoded_mount = mount_name | urlencode %}
+    {% set encoded_target = target_path | urlencode | replace(from='%2F', to='/') %}
+    {% set encoded_parent = parent_path | urlencode | replace(from='%2F', to='/') %}
+
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="title">
+                    <strong>📝 {{ filename }}</strong>
+                    <span>{{ mount_name }}/{{ target_path }}</span>
+                </div>
+                <div class="actions">
+                    <a href="/browse/{{ encoded_mount }}/{{ encoded_parent }}" class="btn btn-secondary">← 목록으로</a>
+                </div>
+            </div>
+
+            <form class="editor" action="/edit/{{ encoded_mount }}/{{ encoded_target }}" method="post">
+                <textarea name="content" spellcheck="false">{{ content }}</textarea>
+                <div class="footer">
+                    <button type="submit" class="btn btn-primary">변경 사항 저장</button>
+                    <a href="/browse/{{ encoded_mount }}/{{ encoded_parent }}" class="btn btn-secondary">취소</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

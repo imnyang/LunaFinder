@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ mount_name }} - LunaFinder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #666;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(102, 126, 234, 0.12);
+            color: #4650c5;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-right span {
+            color: #666;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tree-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tree-item > a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            color: #434c6c;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .tree-item.has-children > a {
+            font-weight: 600;
+        }
+
+        .tree-item .tree-arrow {
+            font-size: 0.7em;
+            width: 14px;
+            text-align: center;
+            color: #99a0c0;
+        }
+
+        .tree-item .tree-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .tree-item.active > a {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.25);
+        }
+
+        .tree-item:not(.active) > a:hover {
+            background: rgba(102, 126, 234, 0.12);
+        }
+
+        .tree-children {
+            list-style: none;
+            margin-left: 16px;
+            padding-left: 12px;
+            border-left: 1px solid rgba(102, 126, 234, 0.18);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tree-dot {
+            font-size: 0.5em;
+        }
+
+        .main-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: white;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .actions-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .upload-form input[type="file"] {
+            font-size: 0.95em;
+        }
+
+        .upload-form button {
+            margin-left: 10px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .file-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-item {
+            display: flex;
+            align-items: stretch;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 20px;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-main {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .file-main:hover {
+            background: #f8f8f8;
+            border-radius: 12px;
+        }
+
+        .file-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .file-size {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .file-actions form {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .inline-input {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.9em;
+        }
+
+        .action-button,
+        .file-actions button {
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+            background: #eef;
+            color: #334;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .action-button:hover,
+        .file-actions button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .danger {
+            background: #ffe5e5;
+            color: #b22222;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-message h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-right {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .actions-panel {
+                flex-direction: column;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-actions {
+                width: 100%;
+            }
+
+            .file-actions form,
+            .file-actions a {
+                width: 100%;
+            }
+
+            .file-actions button,
+            .action-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+{% macro render_tree(node, mount_name, encoded_mount, open_paths, current_path) -%}
+    {% set is_root = node.path == '.' %}
+    {% set has_children = node.children | length > 0 %}
+    {% set is_open = is_root or (node.path in open_paths) %}
+    {% set is_active = node.path == current_path %}
+    {% set encoded_path = node.path | urlencode | replace(from='%2F', to='/') %}
+    <li class="tree-item {% if has_children %}has-children{% endif %} {% if is_active %}active{% endif %}">
+        <a href="/browse/{{ encoded_mount }}/{{ encoded_path }}">
+            {% if has_children %}
+            <span class="tree-arrow">{% if is_open %}▼{% else %}▶{% endif %}</span>
+            {% else %}
+            <span class="tree-arrow tree-dot">•</span>
+            {% endif %}
+            <span class="tree-icon">📁</span>
+            <span class="tree-label">{% if is_root %}{{ mount_name }}{% else %}{{ node.name }}{% endif %}</span>
+        </a>
+        {% if has_children and is_open %}
+        <ul class="tree-children">
+            {% for child in node.children %}
+                {{ self::render_tree(node=child, mount_name=mount_name, encoded_mount=encoded_mount, open_paths=open_paths, current_path=current_path) }}
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </li>
+{%- endmacro %}
+
+    {% set encoded_mount = mount_name | urlencode %}
+    {% set current_safe = current_path | default(value=".") %}
+    {% set encoded_current_path = current_safe | urlencode | replace(from='%2F', to='/') %}
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>📁 {{ mount_name }}</h1>
+                <p>{{ mount_description }}</p>
+                {% if has_permission %}
+                <span class="badge">권한: {{ permission | upper }}</span>
+                {% endif %}
+            </div>
+            <div class="header-right">
+                {% if username %}
+                <span>👤 {{ username }}</span>
+                <a href="/" class="btn">홈</a>
+                <a href="/logout" class="btn btn-secondary">로그아웃</a>
+                {% else %}
+                <span>🌐 공개 마운트</span>
+                <a href="/" class="btn">홈</a>
+                <a href="/login" class="btn">로그인</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="content-layout">
+            <aside class="sidebar">
+                <div class="sidebar-title">📂 디렉토리</div>
+                <nav class="tree-view">
+                    <ul class="tree-list">
+                        {{ self::render_tree(node=tree, mount_name=mount_name, encoded_mount=encoded_mount, open_paths=open_paths, current_path=current_safe) }}
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="main-column">
+                <div class="breadcrumb">
+                    <a href="/browse/{{ encoded_mount }}/.">{{ mount_name }}</a>
+                    {% if current_path and current_path != "." %}
+                        {% set parts = current_path | split(pat="/") %}
+                        {% set accumulated = "" %}
+                        {% for part in parts %}
+                            {% if part %}
+                                {% set_global accumulated = accumulated ~ "/" ~ part %}
+                                {% set encoded_segment = accumulated | urlencode | replace(from='%2F', to='/') %}
+                                / <a href="/browse/{{ encoded_mount }}{{ encoded_segment }}">{{ part }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {% if can_write %}
+                <div class="actions-panel">
+                    <form class="upload-form" action="/browse/{{ encoded_mount }}/{{ encoded_current_path }}/upload" method="post" enctype="multipart/form-data">
+                        <label>
+                            <strong>📤 파일 업로드</strong>
+                            <input type="file" name="files" multiple>
+                        </label>
+                        <button type="submit">업로드</button>
+                    </form>
+                </div>
+                {% endif %}
+
+                <div class="file-list">
+                    {% if parent_path %}
+                    {% set encoded_parent = parent_path | urlencode | replace(from='%2F', to='/') %}
+                    <div class="file-item">
+                        <a href="/browse/{{ encoded_mount }}/{{ encoded_parent }}" class="file-main">
+                            <div class="file-icon">⬆️</div>
+                            <div class="file-info">
+                                <div class="file-name">..</div>
+                                <div class="file-size">상위 디렉토리</div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% if entries %}
+                        {% for entry in entries %}
+                        {% if current_path and current_path != '.' %}
+                            {% set entry_path = current_path ~ '/' ~ entry.name %}
+                        {% else %}
+                            {% set entry_path = entry.name %}
+                        {% endif %}
+                        {% set encoded_entry_path = entry_path | urlencode | replace(from='%2F', to='/') %}
+                        <div class="file-item">
+                            <a href="/browse/{{ encoded_mount }}/{{ encoded_entry_path }}" class="file-main">
+                                <div class="file-icon">
+                                    {% if entry.is_dir %}📁{% else %}📄{% endif %}
+                                </div>
+                                <div class="file-info">
+                                    <div class="file-name">{{ entry.name }}</div>
+                                    <div class="file-size">
+                                        {% if entry.is_dir %}
+                                            디렉토리
+                                        {% elif entry.size %}
+                                            {{ entry.size | filesizeformat }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+
+                            {% if can_write %}
+                            <div class="file-actions">
+                                <form action="/browse/{{ encoded_mount }}/{{ encoded_current_path }}/rename" method="post">
+                                    <input type="hidden" name="target_path" value="{{ entry_path }}">
+                                    <input class="inline-input" type="text" name="new_name" value="{{ entry.name }}" required>
+                                    <button type="submit">이름 변경</button>
+                                </form>
+                                <form action="/browse/{{ encoded_mount }}/{{ encoded_current_path }}/delete" method="post" onsubmit="return confirm('정말 삭제할까요?');">
+                                    <input type="hidden" name="target_path" value="{{ entry_path }}">
+                                    <button type="submit" class="danger">삭제</button>
+                                </form>
+                                {% if not entry.is_dir %}
+                                <a class="action-button" href="/edit/{{ encoded_mount }}/{{ encoded_entry_path }}">텍스트 편집</a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-message">
+                            <h2>📭</h2>
+                            <p>이 디렉토리는 비어 있습니다.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

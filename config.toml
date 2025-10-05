@@ -1,20 +1,73 @@
+# ============================== Server ==============================
+
 [server]
 host = "127.0.0.1"
 port = 8080
 
 [main_page]
-title = "LunaFinder File Browser"
-description = "Browse all available mount points and their contents"
-markdown_file = "./README.md"  # 메인 페이지에 표시할 마크다운 파일
+title = "LunaFinder"
+description = "Made with 💕 by imnya.ng"
+markdown_file = "./page.md"  # 메인 페이지에 표시할 마크다운 파일
+
+# ============================== Users ==============================
+
+[user.imnyang]
+password = "a"
+group = ["admin"] # if group is admin, user can manage other users
+hash_algorithm = "plain"  # 지원되는 해시 알고리즘: argon2, bcrypt, sha256, plain
+# password 필드가 비어 있으면 인증이 비활성화됩니다.
+
+[user.neko]
+password = ""
+group = ["cat"]
+hash_algorithm = "argon2"  # 지원되는 해시 알고리즘: argon2, bcrypt, sha256, plain
+# password 필드가 비어 있으면 인증이 비활성화됩니다.
+
+# ============================== Mounts ==============================
 
 [mounts.home]
 path = "./files/home"
 description = "Home directory"
+public = true  # 인증 없이 접근 가능
+group.admin = "admin"
 
 [mounts.documents]
 path = "./files/documents"
 description = "Documents storage"
+group.cat = ["viewer", "uploader"] # cat 그룹에 뷰어/업로더 권한 부여
+group.admin = "admin"
 
-[mounts.public]
-path = "./files/public"
-description = "Public files"
+[mounts.fur]
+path = "./files/fur"
+description = "fur files"
+user.neko = "read" # neko 사용자에게 읽기 전용 권한 부여
+group.admin = "admin"
+
+# ============================== Permissions ==============================
+
+[permissions.viewer]
+read = true
+
+[permissions.uploader]
+upload = true
+create_file = true
+create_folder = true
+
+[permissions.editor]
+upload = true
+rename = true
+delete = true
+modify = true
+create_file = true
+create_folder = true
+
+[permissions.admin]
+read = true # 읽기 권한
+create_folder = true # 폴더 생성 권한
+create_file = true # 파일 생성 권한
+upload = true # 업로드 권한
+rename = true # 이름 변경 권한
+delete = true # 삭제 권한
+modify = true # 수정 권한
+write = true # 포괄적인 쓰기 권한
+

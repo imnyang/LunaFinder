@@ -4,23 +4,22 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# Web framework
-axum = "0.7"
-tokio = { version = "1.0", features = ["full"] }
-tower-http = { version = "0.5", features = ["fs"] }
-
-# Serialization
+actix-web = "4.4"
+actix-files = "0.6"
+actix-multipart = "0.7"
+tokio = { version = "1.35", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 toml = "0.8"
-
-# File handling
-mime_guess = "2.0"
-zip = "0.6"
-
-# Tracing/logging
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
-# Error handling
+argon2 = { version = "0.5", features = ["std"] }
+bcrypt = "0.15"
+sha2 = "0.10"
 anyhow = "1.0"
+tera = "1.19"
+base64 = "0.21"
+mime_guess = "2.0"
+rand = "0.8"
+futures-util = "0.3"
+urlencoding = "2.1"
+pulldown-cmark = "0.9"
+env_logger = "0.10"

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .user-info span {
+            font-size: 1.1em;
+        }
+        
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .user-info a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .markdown-content {
+            line-height: 1.6;
+            color: #444;
+        }
+        
+        .mounts {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .mounts h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .mount-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .mount-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .mount-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mount-item h3 {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+        
+        .mount-item p {
+            opacity: 0.9;
+        }
+        
+        .login-prompt {
+            background: white;
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-prompt h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .login-prompt p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌙 {{ title }}</h1>
+            <p>{{ description }}</p>
+        </div>
+        
+        {% if username %}
+            <div class="user-info">
+                <span>👤 환영합니다, <strong>{{ username }}</strong>님!</span>
+                <a href="/logout">로그아웃</a>
+            </div>
+            
+            {% if markdown_content %}
+            <div class="content">
+                <div class="markdown-content">
+                    {{ markdown_content | safe }}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if mounts %}
+            <div class="mounts">
+                <h2>📁 사용 가능한 마운트</h2>
+                <div class="mount-list">
+                    {% for mount in mounts %}
+                    <a href="/browse/{{ mount.name }}/." class="mount-item">
+                        <h3>{{ mount.name }} {% if mount.public %}🌐{% endif %}</h3>
+                        <p>{{ mount.description }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            {% if mounts %}
+            <div class="mounts">
+                <h2>📁 사용 가능한 마운트</h2>
+                <div class="mount-list">
+                    {% for mount in mounts %}
+                    <a href="/browse/{{ mount.name }}/." class="mount-item">
+                        <h3>{{ mount.name }} 🌐</h3>
+                        <p>{{ mount.description }} (공개)</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="login-prompt">
+                <h2>로그인이 필요합니다</h2>
+                <p>파일 브라우저를 사용하려면 로그인하세요.</p>
+                <a href="/login" class="btn">로그인</a>
+            </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
